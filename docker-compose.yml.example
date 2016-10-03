@@ -1,0 +1,76 @@
+version: "2"
+
+services:
+
+  docker_config:
+    image: tianon/true
+    volumes:
+      - ./docker:/docker
+
+  src:
+    image: tianon/true
+    volumes:
+      - ./src:/var/www/html
+
+  database:  
+    image: mysql:5.6
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=password123
+      - MYSQL_DATABASE=magento2
+      - MYSQL_USER=dbuser
+      - MYSQL_PASSWORD=password123
+
+#  database_integration_tests:
+#    image: mysql:5.6
+#    ports:
+#      - "3308:3306"
+#    environment:
+#      - MYSQL_ROOT_PASSWORD=password123
+#      - MYSQL_DATABASE=magento_integration_tests
+#      - MYSQL_USER=dbuser
+#      - MYSQL_PASSWORD=password123
+
+  www:
+    image: ecg/magento2-nginx:v3
+    depends_on:
+      - php
+    volumes_from:
+      - src
+    environment:
+      VIRTUAL_PORT: 80
+
+#  http_cache:
+#    image: million12/varnish
+#    depends_on:
+#      - http
+#    volumes_from:
+#      - docker_config
+#    environment:
+#      VCL_CONFIG: /docker/varnish.vcl
+#      VIRTUAL_HOST: magento2-dev.docker
+
+  php:
+    image: ecg/magento2-php-fpm:7.0-fpm
+    volumes_from:
+      - src
+
+  magento_setup:
+    image: ecg/magento2-setup:v8
+    links:
+      - database
+    volumes_from:
+      - src
+    environment:
+      - M2SETUP_DB_HOST=database
+      - M2SETUP_DB_NAME=magento2
+      - M2SETUP_DB_USER=dbuser
+      - M2SETUP_DB_PASSWORD=password123
+      - M2SETUP_BASE_URL=http://magento2-dev.docker/
+      - M2SETUP_BACKEND_FRONTNAME=admin_12345
+      - M2SETUP_ADMIN_FIRSTNAME=Admin
+      - M2SETUP_ADMIN_LASTNAME=User
+      - M2SETUP_ADMIN_EMAIL=magento-admin@example.com
+      - M2SETUP_ADMIN_USER=admin
+      - M2SETUP_ADMIN_PASSWORD=password123
