@@ -33,7 +33,7 @@ services:
 #      - MYSQL_PASSWORD=password123
 
   www:
-    image: ecg/magento2-nginx:v3
+    image: gknoppe/magento2-nginx
     depends_on:
       - php
     volumes_from:
@@ -52,12 +52,12 @@ services:
 #      VIRTUAL_HOST: magento2-dev.docker
 
   php:
-    image: ecg/magento2-php-fpm:7.0-fpm
+    image: gknoppe/magento2-php-fpm
     volumes_from:
       - src
 
   magento_setup:
-    image: ecg/magento2-setup:v8
+    image: gknoppe/magento2-setup
     links:
       - database
     volumes_from:
