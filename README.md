@@ -17,4 +17,8 @@ Start with the provided example configuration file
 
 Optional: Customize the base URL and admin information
 
-`docker-compose up` 
+    cd src
+    composer install   # Initialize the code base
+    cd ..
+    docker-compose up  # Boot docker and install Magento
+
