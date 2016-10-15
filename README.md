@@ -22,3 +22,4 @@ Optional: Customize the base URL and admin information
     cd ..
     docker-compose up  # Boot docker and install Magento
 
+Visit http://www.dockermagento2example.docker/ (or whatever you customized your domain to)
